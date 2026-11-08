@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jinwook (Alex) Jung · Data Scientist</title>
+<meta name="author" content="Jinwook (Alex) Jung">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jinwook (Alex) Jung · Data Scientist">
+<meta property="og:description" content="Case studies on automated reporting, LLM reliability, and statistical judgment.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232350E0'/%3E%3Ctext x='32' y='44' font-family='Arial,Helvetica,sans-serif' font-size='34' font-weight='700' fill='white' text-anchor='middle'%3EJJ%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Jinwook (Alex) Jung, data scientist. Case studies on automated reporting, LLM reliability, and statistical judgment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a calm personal site. Home is a short overview (intro, selected work, about, contact).
+   Each project opens as its own case-study page in a 720px reading column; diagrams may run wider. */
+:root{
+  --bg:#FFFFFF; --soft:#F5F6F8; --soft-2:#EEF0F3;
+  --fg:#12151B; --fg-2:#434A56; --muted:#6B7280; --line:#E4E7EC; --line-2:#C9CED6;
+  --accent:#2350E0; --accent-ink:#1D44C4; --accent-soft:#EDF1FD;
+  --ok:#1E8E4E;
+  --viz-main:#2350E0; --viz-ctx:#A3AAB6; --viz-grid:#ECEEF2;
+  --font:"Instrument Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1014; --soft:#161920; --soft-2:#1C2029;
+    --fg:#ECEEF2; --fg-2:#BDC3CD; --muted:#8C94A1; --line:#252932; --line-2:#3A404C;
+    --accent:#8AA4FF; --accent-ink:#A3B8FF; --accent-soft:#1A2140;
+    --ok:#4CC07E;
+    --viz-main:#7C98FA; --viz-ctx:#4E5666; --viz-grid:#20242C;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1014; --soft:#161920; --soft-2:#1C2029;
+  --fg:#ECEEF2; --fg-2:#BDC3CD; --muted:#8C94A1; --line:#252932; --line-2:#3A404C;
+  --accent:#8AA4FF; --accent-ink:#A3B8FF; --accent-soft:#1A2140;
+  --ok:#4CC07E;
+  --viz-main:#7C98FA; --viz-ctx:#4E5666; --viz-grid:#20242C;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 17px/1.65 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+h1,h2,h3{text-wrap:balance;font-weight:600}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.big{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1080px;margin-inline:auto;padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px))}
+
+/* header */
+.site{display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap;padding-block:24px}
+.brand{font-weight:600;font-size:16px;text-decoration:none;letter-spacing:-.005em}
+.site nav{display:flex;gap:4px 24px;flex-wrap:wrap}
+.site nav a{font-size:15px;color:var(--fg-2);text-decoration:none}
+.site nav a:hover{color:var(--fg)}
+
+/* hero */
+.hero{padding-block:72px 88px;display:flex;flex-direction:column;gap:22px}
+.eyebrow{font-size:15px;font-weight:500;color:var(--muted)}
+.hero h1{font-size:clamp(36px,5.4vw,62px);line-height:1.06;letter-spacing:-.025em;max-width:16em}
+.intro{font-size:clamp(18px,1.8vw,20px);line-height:1.6;color:var(--fg-2);max-width:36em}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;background:var(--fg);color:var(--bg);border:1px solid var(--fg)}
+.btn:hover{opacity:.88}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line-2)}
+.btn.ghost:hover{border-color:var(--fg);opacity:1}
+.avail{display:inline-flex;align-items:center;gap:9px;font-size:15px;color:var(--fg-2)}
+.avail .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex:none}
+
+/* sections */
+.sec{padding-block:72px;border-top:1px solid var(--line);scroll-margin-top:16px}
+.sec-head{display:flex;flex-direction:column;gap:8px;margin-bottom:36px;max-width:40em}
+.sec-head h2{font-size:clamp(26px,3vw,32px);letter-spacing:-.015em;line-height:1.2}
+.sec-head p{color:var(--fg-2)}
+.split{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px 48px}
+.split > h2{font-size:20px;line-height:1.4;letter-spacing:-.01em}
+.split > div,.split > ul,.split > dl{min-width:0}
+
+/* project cards */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{display:flex;flex-direction:column;gap:12px;padding:28px;border:1px solid var(--line);border-radius:16px;text-decoration:none;background:var(--bg);transition:border-color .15s, transform .15s;min-width:0}
+.card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.card .kicker{font-size:14px;color:var(--muted);font-weight:500}
+.card h3{font-size:22px;line-height:1.25;letter-spacing:-.01em}
+.card p{color:var(--fg-2);font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags li{font-size:13px;font-weight:500;color:var(--fg-2);background:var(--soft);border-radius:999px;padding:4px 10px}
+.more{margin-top:auto;padding-top:8px;font-size:15px;font-weight:600;color:var(--accent-ink)}
+.more .arr{display:inline-block;transition:transform .15s}
+.card:hover .more .arr{transform:translateX(3px)}
+.card.feature{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;padding:36px;align-items:center}
+.card.feature .text{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.feature h3{font-size:clamp(24px,2.6vw,30px)}
+.log{background:var(--soft);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.log-row{display:flex;flex-direction:column;gap:8px}
+.log-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14.5px;color:var(--fg-2)}
+.log-top b{font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+.sq-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+.sq{aspect-ratio:1;max-width:100%;border-radius:4px;background:var(--accent);animation:fill .45s ease both;animation-delay:calc(var(--i) * 45ms)}
+@keyframes fill{from{background:var(--accent-soft)}to{background:var(--accent)}}
+.log-note{font-size:14px;color:var(--muted)}
+
+/* about */
+.about-p{color:var(--fg-2);max-width:38em}
+.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:32px}
+.principles li{display:flex;flex-direction:column;gap:6px}
+.principles strong{font-weight:600;font-size:16.5px}
+.principles span{font-size:15.5px;color:var(--fg-2)}
+
+/* experience */
+.xp li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding-block:16px;border-bottom:1px solid var(--line)}
+.xp li:first-child{padding-top:0}
+.xp .org{font-weight:600}
+.xp .role{color:var(--fg-2);font-size:15.5px}
+.xp .when{color:var(--muted);font-size:15px;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+
+/* skills */
+.skills{display:flex;flex-direction:column}
+.skills > div{display:grid;grid-template-columns:200px minmax(0,1fr);gap:4px 24px;padding-block:14px;border-bottom:1px solid var(--line)}
+.skills > div:first-child{padding-top:0}
+.skills dt{font-weight:600;font-size:15.5px}
+.skills dd{color:var(--fg-2);font-size:15.5px}
+
+/* contact */
+.contact-p{color:var(--fg-2);max-width:34em}
+.clines{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.cline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.cline .k{width:84px;font-size:14px;color:var(--muted)}
+.cline .v{font-weight:500;user-select:all;overflow-wrap:anywhere}
+.cline a.v{text-decoration-color:var(--line-2);text-underline-offset:4px}
+.copy{font:600 13.5px/1 var(--font);padding:8px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--bg);color:var(--fg);cursor:pointer}
+.copy:hover{border-color:var(--fg)}
+.copied{font-size:14px;color:var(--muted)}
+
+footer{border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding-block:28px 40px;font-size:14px;color:var(--muted)}
+
+/* ---------- case studies ---------- */
+.case{padding-block:16px 96px}
+.case-body > *{max-width:720px;margin-inline:auto}
+.case-body > .wide{max-width:1000px}
+.case-body > * + *{margin-top:20px}
+.case-body > h2{margin-top:72px;font-size:26px;letter-spacing:-.015em;line-height:1.25}
+.case-body > p{color:var(--fg-2)}
+.back{display:block;font-size:15px;font-weight:500;color:var(--fg-2);text-decoration:none;margin-bottom:28px}
+.back:hover{color:var(--fg)}
+.case h1{font-size:clamp(32px,4.6vw,48px);line-height:1.1;letter-spacing:-.025em}
+.case-body > h1{margin-top:10px}
+.case-body > .lead{font-size:clamp(18px,1.9vw,20px);line-height:1.6;color:var(--fg-2)}
+.case-body > .meta{margin-top:32px}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 24px;padding-block:20px;border-block:1px solid var(--line)}
+.meta div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.meta dt{font-size:13.5px;color:var(--muted)}
+.meta dd{font-size:15.5px;font-weight:500}
+.case-body > .results{margin-top:40px}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;background:var(--soft);border-radius:16px;padding:28px}
+.results div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.big{font-size:clamp(32px,4vw,42px);font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.results span:not(.big){font-size:15px;color:var(--fg-2)}
+.results .note{grid-column:1 / -1;font-size:14px;color:var(--muted);border-top:1px solid var(--line-2);padding-top:14px}
+
+/* step diagram */
+.case-body > .steps{margin-top:32px}
+.steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px 26px}
+.steps.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.step{position:relative;display:flex;flex-direction:column;gap:4px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--bg);min-width:0}
+.step .n{font-size:13px;font-weight:600;color:var(--muted)}
+.step strong{font-size:17px;font-weight:600}
+.step .t{font-size:13.5px;font-weight:500;color:var(--accent-ink)}
+.step .d{font-size:14.5px;line-height:1.5;color:var(--fg-2)}
+.step.hl{background:var(--accent-soft);border-color:var(--accent)}
+.step:not(.last)::after{content:"→";position:absolute;right:-20px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px}
+.fallback{grid-column:3 / 5;border:1.5px dashed var(--line-2);border-radius:10px;padding:10px 14px;font-size:14.5px;color:var(--fg-2)}
+.sched{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;background:var(--soft);border-radius:10px;padding:12px 16px;font-size:14.5px;color:var(--fg-2)}
+.sched strong{color:var(--fg);font-weight:600}
+
+.callout{background:var(--soft);border-radius:12px;padding:18px 20px;font-size:16px}
+.case-body > .callout{color:var(--fg-2)}
+.callout strong{color:var(--fg);font-weight:600}
+
+.case-body > .decisions{margin-top:28px}
+.decisions{display:flex;flex-direction:column;gap:28px}
+.decisions li{display:flex;flex-direction:column;gap:6px}
+.decisions h3{font-size:18px;line-height:1.4}
+.decisions p{color:var(--fg-2)}
+
+.case-body > .howto{margin-top:28px}
+.howto{counter-reset:s;display:flex;flex-direction:column;gap:24px}
+.howto li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:2px 12px}
+.howto li::before{content:counter(s);grid-row:1 / 3;width:28px;height:28px;border-radius:50%;background:var(--soft-2);color:var(--fg);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.howto h3{font-size:18px;line-height:1.5}
+.howto p{color:var(--fg-2)}
+
+.case-body > .chart{margin-top:28px}
+.chart{border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.chart-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px 12px;flex-wrap:wrap}
+.chart-h strong{font-size:17px;font-weight:600}
+.synth{font-size:12.5px;font-weight:500;color:var(--muted);border:1px solid var(--line-2);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.viz{width:100%;min-height:120px}
+.viz svg{display:block;overflow:visible}
+.cap{font-size:15px;color:var(--fg-2)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--fg-2)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.lg-dot{width:10px;height:10px;border-radius:50%;background:var(--viz-main)}
+.lg-ring{width:10px;height:10px;border-radius:50%;border:2px solid var(--viz-ctx);background:var(--bg)}
+
+.bullets{display:flex;flex-direction:column;gap:12px}
+.bullets li{position:relative;padding-left:20px;color:var(--fg-2)}
+.bullets li::before{content:"";position:absolute;left:2px;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--fg-2)}
+
+.case-body > .ba{margin-top:28px}
+.ba{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ba > div{padding:14px 18px;border-top:1px solid var(--line);font-size:15.5px;color:var(--fg-2);min-width:0}
+.ba > div:nth-child(even){border-left:1px solid var(--line)}
+.ba .h{border-top:0;font-size:14px;font-weight:600;color:var(--muted);background:var(--soft)}
+.ba .h.after{color:var(--accent-ink)}
+
+.case-body > .next{margin-top:80px}
+.next{display:flex;flex-direction:column;gap:6px;padding:24px 26px;border:1px solid var(--line);border-radius:16px;text-decoration:none;transition:border-color .15s}
+.next:hover{border-color:var(--line-2)}
+.next span{font-size:14px;color:var(--muted)}
+.next strong{font-size:20px;font-weight:600;line-height:1.3}
+
+.case-body > .fine{font-size:14px;color:var(--muted)}
+
+#tip{position:fixed;left:0;top:0;z-index:20;pointer-events:none;max-width:260px;background:var(--fg);color:var(--bg);font:500 13px/1.4 var(--font);padding:7px 10px;border-radius:8px;opacity:0;transition:opacity .12s}
+#tip.on{opacity:1}
+.vt{fill:var(--fg-2);font:400 13px var(--font)}
+.vt-b{fill:var(--fg);font:600 13px var(--font)}
+.vt-m{fill:var(--muted);font:400 12px var(--font)}
+.m-main{fill:var(--viz-main)}
+.m-ctx{fill:var(--viz-ctx)}
+.s-main{stroke:var(--viz-main);stroke-width:2;fill:none}
+.s-ctx{stroke:var(--viz-ctx);stroke-width:2;fill:none}
+.s-grid{stroke:var(--viz-grid);stroke-width:1}
+.s-base{stroke:var(--line-2);stroke-width:1}
+.d-main{fill:var(--viz-main);stroke:var(--bg);stroke-width:2}
+.d-ring{fill:var(--bg);stroke:var(--viz-ctx);stroke-width:2}
+
+@media (prefers-reduced-motion: reduce){
+  .sq{animation:none}
+  .card,.more .arr{transition:none}
+  .card:hover{transform:none}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  .card.feature{grid-template-columns:minmax(0,1fr);gap:28px;padding:28px}
+  .principles{grid-template-columns:minmax(0,1fr);gap:18px}
+  .meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps,.steps.four{grid-template-columns:minmax(0,1fr);gap:28px}
+  .step:not(.last)::after{content:"↓";right:auto;left:22px;top:auto;bottom:-25px;transform:none}
+  .fallback{grid-column:auto;margin-top:-14px}
+}
+@media (max-width: 720px){
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .split{grid-template-columns:minmax(0,1fr);gap:20px}
+  .skills > div{grid-template-columns:minmax(0,1fr)}
+  .hero{padding-block:40px 64px}
+  .sec{padding-block:56px}
+  .results{grid-template-columns:minmax(0,1fr);gap:16px;padding:22px}
+  .results div{flex-direction:row;align-items:baseline;gap:12px}
+  .big{min-width:84px}
+}
+@media (max-width: 480px){
+  body{font-size:16px}
+  .card,.card.feature{padding:22px}
+  .xp li{grid-template-columns:minmax(0,1fr)}
+  .xp .when{text-align:left}
+  .chart{padding:18px 16px 14px}
+  .case-body > h2{margin-top:56px}
+}
+/* standalone page reset */
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="top"></div>
+<header class="site wrap">
+  <a class="brand" href="#top">Jinwook (Alex) Jung</a>
+  <nav aria-label="Main">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- ======================= HOME ======================= -->
+<main id="home" class="view">
+  <section class="hero wrap" aria-labelledby="hero-h">
+    <p class="eyebrow">Data Scientist · Analytics &amp; Applied AI</p>
+    <h1 id="hero-h">I turn recurring business questions into analytics that run on their own.</h1>
+    <p class="intro">I'm a data science student at Purdue University. At Obigo, I built a reporting pipeline for an insurance partnership that delivered every scheduled report in its first 16 days without anyone running it. Python computed every number, and an LLM wrote the summaries under strict rules.</p>
+    <div class="actions">
+      <a class="btn" href="#work">See my work</a>
+      <a class="btn ghost" href="#contact">Get in touch</a>
+    </div>
+    <p class="avail"><span class="dot" aria-hidden="true"></span>Graduating December 2026 · Open to full-time roles</p>
+  </section>
+
+  <section id="work" class="sec wrap" aria-labelledby="work-h">
+    <div class="sec-head">
+      <h2 id="work-h">Selected work</h2>
+      <p>Three projects from internships and research. Each one covers the problem, what I built, and what I'd improve next.</p>
+    </div>
+    <div class="cards">
+      <a class="card feature" href="#obigo">
+        <div class="text">
+          <span class="kicker">Obigo, Seoul · Data &amp; AI Intern · 2026</span>
+          <h3>Automated reporting for an insurance partnership</h3>
+          <p>A pipeline that pulls app data from BigQuery, computes every KPI in Python, has an LLM write the summary under strict rules, and delivers daily and weekly reports with no manual steps.</p>
+          <ul class="tags" aria-label="Tools"><li>Python</li><li>BigQuery</li><li>GA4</li><li>Claude API</li></ul>
+          <span class="more">Read case study <span class="arr">→</span></span>
+        </div>
+        <div class="log" aria-label="Delivery record: 16 of 16 daily reports and 2 of 2 weekly reports delivered">
+          <div class="log-row">
+            <div class="log-top"><span>Daily reports delivered</span><b>16/16</b></div>
+            <div class="sq-grid" id="sqDaily"></div>
+          </div>
+          <div class="log-row">
+            <div class="log-top"><span>Weekly reports delivered</span><b>2/2</b></div>
+            <div class="sq-grid" id="sqWeekly"></div>
+          </div>
+          <p class="log-note">First 16 days running unattended, from July 21, 2026</p>
+        </div>
+      </a>
+
+      <a class="card" href="#limerick">
+        <span class="kicker">University Hospital Limerick · Research Intern · 2025</span>
+        <h3>Comparing kidney disease across 33 European countries</h3>
+        <p>Cleaned 15+ years of Eurostat data, adjusted the rates for age so countries compare fairly, and built an interactive report for the research team.</p>
+        <ul class="tags" aria-label="Tools"><li>R</li><li>tidyverse</li><li>Quarto</li><li>leaflet</li></ul>
+        <span class="more">Read case study <span class="arr">→</span></span>
+      </a>
+
+      <a class="card" href="#omics">
+        <span class="kicker">Purdue AI Omics Lab · Team Member · 2025–26</span>
+        <h3>Validating lab data before machine learning</h3>
+        <p>Wrote Python checks that catch inconsistent mass-spectrometry files before they reach the lab's biomarker research models.</p>
+        <ul class="tags" aria-label="Tools"><li>Python</li><li>Django</li><li>Git</li></ul>
+        <span class="more">Read case study <span class="arr">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section id="about" class="sec wrap split" aria-labelledby="about-h">
+    <h2 id="about-h">About</h2>
+    <div>
+      <p class="about-p">I'm finishing a B.S. in Data Science at Purdue University. I've worked with real data in three countries: at an automotive software company in Korea, a university research lab in the US, and a hospital research team in Ireland. Between my studies, I completed mandatory service in the Republic of Korea Air Force, where I managed flight and mission data. I speak Korean, English, and French.</p>
+      <ul class="principles" aria-label="How I work">
+        <li><strong>Start from the decision.</strong><span>I ask what someone needs to decide before I choose the data or the method.</span></li>
+        <li><strong>Keep numbers in code.</strong><span>Calculations live in repeatable code. AI writes the sentences, never the figures.</span></li>
+        <li><strong>Plan for what goes wrong.</strong><span>Late data, API outages, and small samples each get a planned response.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="experience" class="sec wrap split" aria-labelledby="xp-h">
+    <h2 id="xp-h">Experience</h2>
+    <ul class="xp">
+      <li><div><div class="org">Obigo, Seoul</div><div class="role">Data &amp; AI Intern</div></div><span class="when">Jun – Aug 2026</span></li>
+      <li><div><div class="org">Purdue AI Omics Lab</div><div class="role">Project Team Member</div></div><span class="when">Sep 2025 – Apr 2026</span></li>
+      <li><div><div class="org">University Hospital Limerick, Ireland</div><div class="role">Research Intern</div></div><span class="when">May – Jul 2025</span></li>
+      <li><div><div class="org">Republic of Korea Air Force</div><div class="role">Mandatory military service</div></div><span class="when">Jul 2021 – Apr 2023</span></li>
+      <li><div><div class="org">Purdue University</div><div class="role">B.S. Data Science · Dean's List, Fall 2023 – Spring 2026</div></div><span class="when">Graduating Dec 2026</span></li>
+    </ul>
+  </section>
+
+  <section id="skills" class="sec wrap split" aria-labelledby="sk-h">
+    <h2 id="sk-h">Skills</h2>
+    <dl class="skills">
+      <div><dt>Analysis &amp; statistics</dt><dd>KPI and funnel analysis · confidence and prediction intervals · age standardization · regression · experimental design</dd></div>
+      <div><dt>Data &amp; automation</dt><dd>Python (pandas, NumPy) · SQL on BigQuery · GA4 · ETL pipelines · job scheduling</dd></div>
+      <div><dt>AI &amp; machine learning</dt><dd>Claude API · output validation and fallbacks · scikit-learn · PyTorch</dd></div>
+      <div><dt>Reporting &amp; tools</dt><dd>R (tidyverse, Plotly, leaflet) · Quarto · HTML-to-PDF reports · Git</dd></div>
+    </dl>
+  </section>
+
+  <section id="contact" class="sec wrap split" aria-labelledby="ct-h">
+    <h2 id="ct-h">Contact</h2>
+    <div>
+      <p class="contact-p">I'm looking for Data Scientist, Data Analyst, and Applied AI roles in Korea and abroad. Email is the best way to reach me.</p>
+      <div class="clines">
+        <div class="cline">
+          <span class="k">Email</span>
+          <span class="v" id="email">alexjwjung@gmail.com</span>
+          <button class="copy" id="copyBtn" type="button">Copy</button>
+          <span class="copied" id="copyMsg" aria-live="polite"></span>
+        </div>
+        <div class="cline">
+          <span class="k">LinkedIn</span>
+          <a class="v" href="https://www.linkedin.com/in/jinwook-jung-693032201" target="_blank" rel="noopener">linkedin.com/in/jinwook-jung-693032201</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ======================= CASE: OBIGO ======================= -->
+<article id="case-obigo" class="view case" hidden aria-labelledby="ob-h">
+  <div class="wrap case-body">
+    <a class="back" href="#work">← All work</a>
+    <p class="eyebrow">Case study · Obigo, Seoul</p>
+    <h1 id="ob-h">Automated reporting for an insurance partnership</h1>
+    <p class="lead">In May 2026, an at-home car-maintenance service from Obigo's group launched inside a major Korean insurer's app. I built the system that reports on it every day and every week, without anyone running it by hand.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>Data &amp; AI Intern</dd></div>
+      <div><dt>Timeline</dt><dd>Jun – Aug 2026</dd></div>
+      <div><dt>My part</dt><dd>Designed and built the pipeline</dd></div>
+      <div><dt>Tools</dt><dd>Python, BigQuery, GA4, Claude API</dd></div>
+    </dl>
+    <div class="results">
+      <div><span class="big">16/16</span><span>daily reports delivered</span></div>
+      <div><span class="big">2/2</span><span>weekly reports delivered</span></div>
+      <div><span class="big">1</span><span>late-data day recovered automatically</span></div>
+      <p class="note">First 16 days of unattended operation, starting July 21, 2026.</p>
+    </div>
+
+    <h2>The problem</h2>
+    <p>Every week, one person collected the numbers by hand, pasted them into PowerPoint, and emailed the report to the insurer. It took the same time every week, problems only showed up in the next week's report, and each new partner would have added the same work again.</p>
+    <p>The goal was a report that nobody has to run, which arrives on schedule even when the data is late or an API fails.</p>
+
+    <h2>What I built</h2>
+    <p>Five steps run in order, and a scheduler starts them on its own.</p>
+    <div class="wide steps" role="figure" aria-label="Pipeline: collect, compute, write, check, deliver, with a fallback and a scheduler">
+      <div class="step"><span class="n">1</span><strong>Collect</strong><span class="t">BigQuery · GA4</span><span class="d">Pull the day's app events, reservations, and reviews. Save the raw data.</span></div>
+      <div class="step hl"><span class="n">2</span><strong>Compute</strong><span class="t">Python · pandas</span><span class="d">KPIs, funnel, intervals, and chart values. Every number is made here.</span></div>
+      <div class="step"><span class="n">3</span><strong>Write</strong><span class="t">Claude API</span><span class="d">Short text in fixed slots: title, status, evidence, priority.</span></div>
+      <div class="step"><span class="n">4</span><strong>Check</strong><span class="t">Rules</span><span class="d">Block overclaiming. Confirm page count, fonts, and chart values.</span></div>
+      <div class="step last"><span class="n">5</span><strong>Deliver</strong><span class="t">PDF · email · messenger</span><span class="d">Daily message and a weekly 4-page PDF by email. Every send is logged.</span></div>
+      <div class="fallback">If the LLM fails or breaks a rule, template sentences built from the same numbers take its place.</div>
+      <div class="sched"><strong>Scheduler</strong><span>Runs the steps up to 8 times a day, remembers which dates are still pending, and sends an alert if two days fall behind.</span></div>
+    </div>
+    <p class="callout"><strong>Built before the data arrived.</strong> Access to the data came much later than planned. I built the report layout, delivery tests, and fallback paths on dummy data first, so when access arrived I only had to connect it.</p>
+
+    <h2>Key decisions</h2>
+    <ul class="decisions">
+      <li>
+        <h3>Code computes the numbers. The LLM writes the words.</h3>
+        <p>KPIs, conversion rates, intervals, and even chart coordinates are calculated in Python. The model only receives the finished metrics, and it can't change a number, a chart, or the layout. This lowers the risk of made-up figures and ties token use to the number of reports instead of the amount of data.</p>
+      </li>
+      <li>
+        <h3>If the LLM fails, the report still goes out.</h3>
+        <p>Generated text is checked against rules that block exaggerated claims. If it breaks a rule, or the API call fails, the report uses template sentences built from the same metrics. It reads plainer, but it's correct and on time.</p>
+      </li>
+      <li>
+        <h3>Try eight times a day and remember what's pending.</h3>
+        <p>The data export didn't arrive at the same time every day. The scheduler checks every two hours from 10:00 to midnight, saves which dates are still pending, and picks up where it left off after a restart.</p>
+      </li>
+      <li>
+        <h3>Keep the raw data.</h3>
+        <p>Raw pulls are saved as NDJSON before any processing. When a metric definition changed, I could recompute past reports without querying BigQuery again.</p>
+      </li>
+    </ul>
+
+    <h2>The analysis inside the report</h2>
+    <p>My first draft ran past 10 pages. I cut it to 4 by keeping only what the insurer needed to judge the week. Two examples:</p>
+
+    <figure class="chart">
+      <div class="chart-h"><strong>Finding where users drop off</strong><span class="synth">Synthetic data</span></div>
+      <div class="viz" id="vFunnel"></div>
+      <p class="cap">In the 7-step reservation flow, choosing a date lost far more users than any other step, so it became the first item for UX review.</p>
+    </figure>
+
+    <figure class="chart">
+      <div class="chart-h"><strong>Knowing when not to conclude</strong><span class="synth">Synthetic data</span></div>
+      <div class="viz" id="vWilson"></div>
+      <p class="cap">Zero bookings from 6 users isn't reported as "0% conversion." Its 95% Wilson interval runs up to 39%, so the report marks it "judgment withheld" until 100 users have seen it.</p>
+    </figure>
+
+    <p>The report also splits each week's change into a traffic effect and a conversion effect, so fewer visitors isn't mistaken for a worse product. Next week's outlook is shown as an 80% range instead of a single number, and checked against the actual result a week later.</p>
+    <p class="fine">Charts use made-up numbers that follow the real logic. Real partner figures stay private.</p>
+
+    <h2>What changed</h2>
+    <div class="ba" role="table" aria-label="Before and after">
+      <div class="h" role="columnheader">Before</div><div class="h after" role="columnheader">After</div>
+      <div role="cell">A weekly report built by hand</div><div role="cell">Daily and weekly reports built and sent automatically</div>
+      <div role="cell">Problems seen a week later</div><div role="cell">Problems visible the next day</div>
+      <div role="cell">Each new partner adds the same work</div><div role="cell">A new delivery channel is a configuration change</div>
+    </div>
+
+    <h2>What I'd improve next</h2>
+    <ul class="bullets">
+      <li>Check that every number the LLM writes matches the computed metrics. Today the rules check wording and structure only.</li>
+      <li>Log how often the fallback is used, and alert if it keeps happening.</li>
+      <li>Add real-time incident alerts. They were planned but not shipped, because the partner's systems didn't collect the signals they needed.</li>
+    </ul>
+    <p class="callout"><strong>Also at Obigo.</strong> In my first week, I audited the AI-generated tags on Pickle, Obigo's in-car podcast platform. I looked at how often each tag was used across 5 categories to find over-used, rarely used, and skewed tags, and gave the team a first quality baseline.</p>
+
+    <a class="next" href="#limerick"><span>Next case study</span><strong>Comparing kidney disease across 33 European countries →</strong></a>
+  </div>
+</article>
+
+<!-- ======================= CASE: LIMERICK ======================= -->
+<article id="case-limerick" class="view case" hidden aria-labelledby="li-h">
+  <div class="wrap case-body">
+    <a class="back" href="#work">← All work</a>
+    <p class="eyebrow">Case study · University Hospital Limerick, Ireland</p>
+    <h1 id="li-h">Comparing kidney disease across 33 European countries</h1>
+    <p class="lead">The research team wanted to see how Ireland compares with the rest of Europe on chronic kidney disease, and how long nephrology patients, including children, wait to be seen. I turned 15+ years of public data into a report they could explore on their own.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>Research Intern</dd></div>
+      <div><dt>Timeline</dt><dd>May – Jul 2025</dd></div>
+      <div><dt>Data</dt><dd>Eurostat, Irish waiting lists</dd></div>
+      <div><dt>Tools</dt><dd>R, tidyverse, Plotly, leaflet, Quarto</dd></div>
+    </dl>
+
+    <h2>The challenge</h2>
+    <p>The sources coded countries, years, and diseases in slightly different ways. On top of that, a country with an older population has more kidney disease simply because of age, so comparing raw rates would mix up age with health.</p>
+
+    <h2>What I did</h2>
+    <ol class="howto">
+      <li><h3>Made the sources match</h3><p>Aligned country codes, years, and ICD-10 disease groups across hospital-discharge and cause-of-death data.</p></li>
+      <li><h3>Adjusted for age</h3><p>Reweighted each country's rates to the same standard population, so the differences reflect health instead of age structure.</p></li>
+      <li><h3>Made it explorable</h3><p>Built an interactive Quarto report. Pick a country to see its hospitalization and mortality trends and its place on the map, next to the EU average.</p></li>
+    </ol>
+
+    <figure class="chart">
+      <div class="chart-h"><strong>Why adjusting for age matters</strong><span class="synth">Illustrative example</span></div>
+      <div class="legend"><span><i class="lg-ring"></i>Raw rate</span><span><i class="lg-dot"></i>Age-standardized rate</span></div>
+      <div class="viz" id="vAge"></div>
+      <p class="cap">Rates per 100,000 people. With raw rates, Country A looks far worse. Once both are adjusted to the same age structure, Country B is slightly higher. These are hypothetical countries, not study data.</p>
+    </figure>
+
+    <h2>What it delivered</h2>
+    <p>The team got a reproducible, filterable view of 33 countries in place of one-off static charts. Waiting lists are tracked by how long patients have waited: 0–6, 6–12, 12–18, and 18+ months. I also presented the 33-country comparison to support the team's ongoing research.</p>
+
+    <a class="next" href="#omics"><span>Next case study</span><strong>Validating lab data before machine learning →</strong></a>
+  </div>
+</article>
+
+<!-- ======================= CASE: OMICS ======================= -->
+<article id="case-omics" class="view case" hidden aria-labelledby="om-h">
+  <div class="wrap case-body">
+    <a class="back" href="#work">← All work</a>
+    <p class="eyebrow">Case study · Purdue AI Omics Lab</p>
+    <h1 id="om-h">Validating lab data before machine learning</h1>
+    <p class="lead">Dr. W. Andy Tao's AI Omics team uses high-resolution mass-spectrometry data to search for disease biomarkers with machine learning. Before any model can learn from that data, the data has to be consistent.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>Project Team Member</dd></div>
+      <div><dt>Timeline</dt><dd>Sep 2025 – Apr 2026</dd></div>
+      <div><dt>Team</dt><dd>AI Omics research lab</dd></div>
+      <div><dt>Tools</dt><dd>Python, R, Django, Git</dd></div>
+    </dl>
+
+    <h2>The challenge</h2>
+    <p>Files arrived in different structures from one experiment to the next. Data that hadn't been checked couldn't safely go into model training.</p>
+
+    <div class="wide steps four" role="figure" aria-label="Flow: raw files, structure checks, standardized data, machine learning research">
+      <div class="step"><span class="n">1</span><strong>Raw files</strong><span class="d">Mass-spectrometry output, structured differently by experiment</span></div>
+      <div class="step hl"><span class="n">2</span><strong>Structure checks</strong><span class="d">Rule-based checks and error handling in Python. This was my part.</span></div>
+      <div class="step"><span class="n">3</span><strong>Standardized data</strong><span class="d">One consistent format across experiments</span></div>
+      <div class="step last"><span class="n">4</span><strong>ML research</strong><span class="d">Biomarker models trained on checked data</span></div>
+    </div>
+
+    <h2>What I did</h2>
+    <ul class="bullets">
+      <li>Wrote modular Python processing code with file handling and clear error handling.</li>
+      <li>Added rule-based checks that confirm each experiment's structure before the data moves on.</li>
+      <li>Built inside the lab's shared Django backend, working through Git feature branches with the team.</li>
+    </ul>
+
+    <h2>Why it matters</h2>
+    <p>A model is only as reliable as its inputs. These checks give the lab a validation step before training, which keeps preprocessing stable and the research reproducible.</p>
+
+    <a class="next" href="#obigo"><span>Back to the first case study</span><strong>Automated reporting for an insurance partnership →</strong></a>
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <span>Jinwook (Alex) Jung · 2026</span>
+    <span>Project charts use made-up numbers. No company code or partner data appears on this site.</span>
+  </div>
+</footer>
+
+<div id="tip" aria-hidden="true"></div>
+
+<script>
+(function(){
+  /* ---------- delivery squares ---------- */
+  function squares(id, n, label){
+    const host = document.getElementById(id);
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement('span');
+      s.className = 'sq'; s.style.setProperty('--i', i);
+      s.setAttribute('data-tip', label + ' ' + (i + 1) + ' of ' + n + ' · delivered');
+      host.appendChild(s);
+    }
+  }
+  squares('sqDaily', 16, 'Daily report');
+  squares('sqWeekly', 2, 'Weekly report');
+
+  /* ---------- routing ---------- */
+  const CASES = { obigo: 'case-obigo', limerick: 'case-limerick', omics: 'case-omics' };
+  const views = Array.prototype.slice.call(document.querySelectorAll('.view'));
+  let first = true;
+  function route(){
+    const h = location.hash.slice(1);
+    const caseId = CASES[h];
+    views.forEach(v => { v.hidden = caseId ? v.id !== caseId : v.id !== 'home'; });
+    if (caseId) { if (!first) window.scrollTo(0, 0); }
+    else if (h) { const t = document.getElementById(h); if (t) requestAnimationFrame(() => t.scrollIntoView()); }
+    first = false;
+  }
+  addEventListener('hashchange', route);
+  route();
+
+  /* ---------- tooltip ---------- */
+  const tip = document.getElementById('tip');
+  const hide = () => tip.classList.remove('on');
+  document.addEventListener('pointermove', e => {
+    const t = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+    if (!t) { hide(); return; }
+    tip.textContent = t.getAttribute('data-tip');
+    tip.classList.add('on');
+    const r = tip.getBoundingClientRect(), pad = 14;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    if (x + r.width > innerWidth - 8) x = e.clientX - r.width - pad;
+    if (y + r.height > innerHeight - 8) y = e.clientY - r.height - pad;
+    tip.style.transform = 'translate(' + Math.max(8, x) + 'px,' + Math.max(8, y) + 'px)';
+  });
+  addEventListener('scroll', hide, { passive: true });
+
+  /* ---------- svg helpers ---------- */
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, a, p){ const n = document.createElementNS(NS, tag); for (const k in a) n.setAttribute(k, a[k]); if (p) p.appendChild(n); return n; }
+  function txt(p, x, y, s, cls, anchor){ const t = el('text', { x: x, y: y, class: cls, 'text-anchor': anchor || 'start' }, p); t.textContent = s; return t; }
+  function svgFor(host, H, label){ host.innerHTML = ''; const W = Math.max(260, host.clientWidth); const s = el('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': label }); host.appendChild(s); return { s: s, W: W }; }
+  function hbar(x, y, w, h, r){ r = Math.min(r, w, h / 2); return 'M' + x + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h - r) + 'Q' + (x + w) + ',' + (y + h) + ' ' + (x + w - r) + ',' + (y + h) + 'H' + x + 'Z'; }
+  const MINUS = '−';
+  const fmt = n => n.toLocaleString('en-US');
+
+  /* ---------- funnel ---------- */
+  const FUNNEL = [['Landing', 1000], ['Service chosen', 720], ['Vehicle entered', 610], ['Date chosen', 300], ['Address entered', 265], ['Payment', 230], ['Booked', 205]];
+  function drawFunnel(host){
+    const rowH = 30, H = FUNNEL.length * rowH + 4;
+    const o = svgFor(host, H, 'Synthetic 7-step reservation funnel from 1,000 to 205 users. The biggest drop, 51 percent, is at the date step.');
+    const W = o.W, s = o.s, narrow = W < 420;
+    const x0 = narrow ? 112 : 136, x1 = W - (narrow ? 74 : 132);
+    const sx = v => v / 1000 * (x1 - x0);
+    el('line', { x1: x0, x2: x0, y1: 2, y2: H - 2, class: 's-base' }, s);
+    FUNNEL.forEach((d, i) => {
+      const y = i * rowH, bh = 14, by = y + (rowH - bh) / 2;
+      const hl = d[0] === 'Date chosen';
+      const prev = i ? FUNNEL[i - 1][1] : null, drop = prev ? Math.round((1 - d[1] / prev) * 100) : null;
+      txt(s, 0, by + bh / 2 + 4.5, d[0], hl ? 'vt-b' : 'vt');
+      el('path', { d: hbar(x0, by, sx(d[1]), bh, 4), class: hl ? 'm-main' : 'm-ctx' }, s);
+      if (i === 0 || hl || i === FUNNEL.length - 1) {
+        const lab = hl ? fmt(d[1]) + (narrow ? '  ' : '  · ') + MINUS + drop + '%' + (narrow ? '' : ' at this step') : fmt(d[1]);
+        txt(s, x0 + sx(d[1]) + 8, by + bh / 2 + 4.5, lab, hl ? 'vt-b' : 'vt-m');
+      }
+      el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent', 'data-tip': d[0] + ': ' + fmt(d[1]) + ' users' + (prev ? ' · ' + MINUS + drop + '% from the previous step' : '') + ' (synthetic)' }, s);
+    });
+  }
+
+  /* ---------- wilson ---------- */
+  function wilson(x, n){ const z = 1.96, p = x / n, z2 = z * z, den = 1 + z2 / n, c = (p + z2 / (2 * n)) / den, h = z * Math.sqrt(p * (1 - p) / n + z2 / (4 * n * n)) / den; return [Math.max(0, c - h), Math.min(1, c + h), p]; }
+  const SEG = [{ k: 'Segment A', x: 18, n: 120 }, { k: 'Segment B', x: 9, n: 85 }, { k: 'Segment C', x: 0, n: 6, hold: true }];
+  function drawWilson(host){
+    const rowH = 50, axisH = 24, H = SEG.length * rowH + axisH;
+    const o = svgFor(host, H, 'Conversion rates with 95 percent Wilson intervals. Segment C, 0 of 6 users, has an interval from 0 to 39 percent and is withheld.');
+    const W = o.W, s = o.s, narrow = W < 420;
+    const x0 = narrow ? 96 : 120, x1 = W - 12;
+    const sx = p => x0 + p / 0.5 * (x1 - x0);
+    const pct = v => Math.round(v * 100);
+    [0, .1, .2, .3, .4, .5].forEach(g => { el('line', { x1: sx(g), x2: sx(g), y1: 0, y2: H - axisH + 2, class: 's-grid' }, s); txt(s, sx(g), H - 5, pct(g) + '%', 'vt-m', 'middle'); });
+    SEG.forEach((d, i) => {
+      const w = wilson(d.x, d.n), y = i * rowH, cy = y + 33;
+      txt(s, 0, y + 22, d.k, d.hold ? 'vt-b' : 'vt');
+      txt(s, 0, y + 38, d.x + ' of ' + d.n + ' users', 'vt-m');
+      const lab = d.hold ? (narrow ? 'Up to ' + pct(w[1]) + '% · withheld' : 'Could be anywhere from 0 to ' + pct(w[1]) + '% · judgment withheld') : pct(w[2]) + '%  (' + pct(w[0]) + '–' + pct(w[1]) + '%)';
+      txt(s, x0 + 2, y + 18, lab, d.hold ? 'vt-b' : 'vt');
+      const cls = d.hold ? 's-ctx' : 's-main';
+      const ln = el('line', { x1: sx(w[0]), x2: sx(w[1]), y1: cy, y2: cy, class: cls }, s);
+      if (d.hold) ln.setAttribute('stroke-dasharray', '4 3');
+      [w[0], w[1]].forEach(v => el('line', { x1: sx(v), x2: sx(v), y1: cy - 5, y2: cy + 5, class: cls }, s));
+      el('circle', { cx: sx(w[2]), cy: cy, r: 4.5, class: d.hold ? 'd-ring' : 'd-main' }, s);
+      el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent', 'data-tip': d.k + ': ' + d.x + '/' + d.n + ' = ' + pct(w[2]) + '%, 95% Wilson interval ' + (w[0] * 100).toFixed(1) + '–' + (w[1] * 100).toFixed(1) + '%' + (d.hold ? '. Withheld until 100 users.' : ' (synthetic)') }, s);
+    });
+  }
+
+  /* ---------- age standardization (illustrative) ---------- */
+  const AGE = [{ k: 'Country A', sub: 'older population', raw: 182, std: 128 }, { k: 'Country B', sub: 'younger population', raw: 104, std: 131 }];
+  function drawAge(host){
+    const rowH = 58, axisH = 24, H = AGE.length * rowH + axisH;
+    const o = svgFor(host, H, 'Illustrative example. Country A: raw rate 182, age-standardized 128 per 100,000. Country B: raw 104, standardized 131.');
+    const W = o.W, s = o.s, narrow = W < 420;
+    const x0 = narrow ? 112 : 150, x1 = W - 16;
+    const sx = v => x0 + v / 200 * (x1 - x0);
+    [0, 50, 100, 150, 200].forEach(g => { el('line', { x1: sx(g), x2: sx(g), y1: 0, y2: H - axisH + 2, class: 's-grid' }, s); txt(s, sx(g), H - 5, String(g), 'vt-m', 'middle'); });
+    AGE.forEach((d, i) => {
+      const y = i * rowH, cy = y + 36;
+      txt(s, 0, y + 30, d.k, 'vt-b');
+      txt(s, 0, y + 46, d.sub, 'vt-m');
+      el('line', { x1: sx(d.raw), x2: sx(d.std), y1: cy, y2: cy, class: 's-base' }, s);
+      el('circle', { cx: sx(d.raw), cy: cy, r: 5.5, class: 'd-ring' }, s);
+      el('circle', { cx: sx(d.std), cy: cy, r: 5.5, class: 'd-main' }, s);
+      txt(s, sx(d.raw), cy - 12, String(d.raw), 'vt-m', 'middle');
+      txt(s, sx(d.std), cy - 12, String(d.std), 'vt-b', 'middle');
+      el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent', 'data-tip': d.k + ' (' + d.sub + '): raw ' + d.raw + ', age-standardized ' + d.std + ' per 100,000 · hypothetical' }, s);
+    });
+  }
+
+  /* ---------- draw when visible, redraw on resize ---------- */
+  [['vFunnel', drawFunnel], ['vWilson', drawWilson], ['vAge', drawAge]].forEach(c => {
+    const host = document.getElementById(c[0]); let last = 0;
+    const run = () => { const w = host.clientWidth; if (w && w !== last) { last = w; c[1](host); } };
+    run();
+    if ('ResizeObserver' in window) new ResizeObserver(run).observe(host); else addEventListener('resize', run);
+  });
+
+  /* ---------- copy email ---------- */
+  const btn = document.getElementById('copyBtn'), msg = document.getElementById('copyMsg'), email = document.getElementById('email');
+  btn.addEventListener('click', () => {
+    const done = t => { msg.textContent = t; setTimeout(() => { msg.textContent = ''; }, 2400); };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(email); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); done('Selected. Press Ctrl+C or ⌘C to copy.'); };
+    try { navigator.clipboard.writeText(email.textContent.trim()).then(() => done('Copied'), fallback); } catch (e) { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>
